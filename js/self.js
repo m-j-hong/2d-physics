@@ -11,10 +11,9 @@ resize();
 /* ---------- parameters ---------- */
 const RINGS = 20;
 const BASE_RADIUS = 1;
-const GAP = 60;
+const BASE_GAP = 6;
 
-const BASE_SAT = 90; // max saturation
-const SAT_FALLOFF = 6; // per-ring drop
+const BASE_SAT = 80; // max saturation
 
 const SPEED = 0.005;
 const ERROR = 10;
@@ -48,10 +47,10 @@ function draw() {
   const satFactor = Math.max(0, 1 - dist / (maxDist * 3)); // 0..1
 
   // map distance to "breath amplitude" (closer = bigger change)
-  const breathFactor = 0.6 * satFactor + 0.05; // ensures minimal motion even far away
+  const breathFactor = .9 * satFactor + 0.08; // ensures minimal motion even far away
 
   for (let i = 0; i < RINGS; i++) {
-    const delay = i * 400;
+    const delay = i * 800;
     const hue =
       baseHue +
       Math.sin((t - delay) * SPEED) * ERROR;
@@ -59,10 +58,12 @@ function draw() {
     // modulate saturation based on mouse distance
     const saturation = Math.max(
       0,
-      BASE_SAT * satFactor - i * SAT_FALLOFF
+      BASE_SAT * satFactor
     );
 
-    const radius = BASE_RADIUS + i * GAP;
+    const opacity = 100 - i * (RINGS / 3)
+
+    const radius = BASE_RADIUS + i * i * BASE_GAP;
 
     // breathing stroke width
     const baseLine = 50 / (i + 1);
@@ -70,7 +71,7 @@ function draw() {
 
     ctx.beginPath();
     ctx.arc(0, 0, radius, 0, Math.PI * 2);
-    ctx.strokeStyle = `hsl(${hue}, ${saturation}%, 50%)`;
+    ctx.strokeStyle = `hsla(${hue}, ${saturation}%, 70%, ${opacity}%)`;
     ctx.lineWidth = strokeWidth;
     ctx.stroke();
   }
